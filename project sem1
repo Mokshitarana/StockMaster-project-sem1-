@@ -1,0 +1,141 @@
+#include <stdio.h>
+#include <string.h>
+
+// Structure to hold product details
+typedef struct {
+    int id;
+    char name[50];
+    int quantity;
+    float price;
+} Product;
+
+// Function prototypes
+void addProduct(Product products[], int *count);
+void updateProduct(Product products[], int count);
+void deleteProduct(Product products[], int *count);
+void viewInventory(Product products[], int count);
+void manageSales(Product products[], int count);
+
+int main() {
+    Product products[100];
+    int productCount = 0;
+    int choice;
+
+    do {
+        printf("\n==== StockMaster - Coke Beverages Inventory Management ====\n");
+        printf("1. Add Product\n");
+        printf("2. Update Product\n");
+        printf("3. Delete Product\n");
+        printf("4. View Inventory\n");
+        printf("5. Manage Sales\n");
+        printf("6. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                addProduct(products, &productCount);
+                break;
+            case 2:
+                updateProduct(products, productCount);
+                break;
+            case 3:
+                deleteProduct(products, &productCount);
+                break;
+            case 4:
+                viewInventory(products, productCount);
+                break;
+            case 5:
+                manageSales(products, productCount);
+                break;
+            case 6:
+                printf("Exiting...\n");
+                break;
+            default:
+                printf("Invalid choice!\n");
+        }
+    } while (choice != 6);
+
+    return 0;
+}
+
+void addProduct(Product products[], int *count) {
+    printf("\nAdding a new product:\n");
+    printf("Enter Product ID: ");
+    scanf("%d", &products[*count].id);
+    printf("Enter Product Name: ");
+    scanf(" %49s", products[*count].name);
+    printf("Enter Quantity: ");
+    scanf("%d", &products[*count].quantity);
+    printf("Enter Price: ");
+    scanf("%f", &products[*count].price);
+    (*count)++;
+    printf("Product added successfully!\n");
+}
+
+void updateProduct(Product products[], int count) {
+    int id, i;
+    printf("\nEnter Product ID to update: ");
+    scanf("%d", &id);
+    for (i = 0; i < count; i++) {
+        if (products[i].id == id) {
+            printf("Updating Product (ID: %d):\n", id);
+            printf("Enter New Name: ");
+            scanf(" %49s", products[i].name);
+            printf("Enter New Quantity: ");
+            scanf("%d", &products[i].quantity);
+            printf("Enter New Price: ");
+            scanf("%f", &products[i].price);
+            printf("Product updated successfully!\n");
+            return;
+        }
+    }
+    printf("Product not found!\n");
+}
+
+void deleteProduct(Product products[], int *count) {
+    int id, i, j;
+    printf("\nEnter Product ID to delete: ");
+    scanf("%d", &id);
+    for (i = 0; i < *count; i++) {
+        if (products[i].id == id) {
+            for (j = i; j < *count - 1; j++) {
+                products[j] = products[j + 1];
+            }
+            (*count)--;
+            printf("Product deleted successfully!\n");
+            return;
+        }
+    }
+    printf("Product not found!\n");
+}
+
+void viewInventory(Product products[], int count) {
+    printf("\nInventory List:\n");
+    printf("%-5s %-15s %-10s %-10s\n", "ID", "Name", "Quantity", "Price"); // Fixed-width headers
+    for (int i = 0; i < count; i++) {
+        printf("%-5d %-15s %-10d %-10.2f\n", products[i].id, products[i].name, products[i].quantity, products[i].price);
+    }
+}
+
+
+
+void manageSales(Product products[], int count) {
+    int id, quantity, i;
+    printf("\nEnter Product ID for sale: ");
+    scanf("%d", &id);
+    for (i = 0; i < count; i++) {
+        if (products[i].id == id) {
+            printf("Enter Quantity to sell: ");
+            scanf("%d", &quantity);
+            if (quantity <= products[i].quantity) {
+                products[i].quantity -= quantity;
+                printf("Sale successful! Total: %.2f\n", quantity * products[i].price);
+            } else {
+                printf("Insufficient stock!\n");
+            }
+            return;
+        }
+    }
+    printf("Product not found!\n");
+}
